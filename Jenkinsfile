@@ -9,7 +9,7 @@ pipeline {
 		stage ("build-project") {
 		steps {
 			sh "mvn clean install"
-			sh "cp -r /mnt/work/project/target/LoginWebApp.war /mnt/server/apache-tomcat-9.0.73/webapps
+			sh "cp -r /mnt/work/project/target/LoginWebApp.war /mnt/server/apache-tomcat-9.0.73/webapps"
 			sh "cd /mnt/server/apache-tomcat-9.0.73/bin | ./shutdown.sh"
 			sh "sleep 5"
 			sh "cd /mnt/server/apache-tomcat-9.0.73/bin | ./startup.sh"
