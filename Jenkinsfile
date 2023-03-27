@@ -24,7 +24,7 @@ pipeline {
 		}
 		steps {
 			sh "yum install mysql -y"
-			sh "mysql -h $DB_HOST -u $DB_USER -p $DB_PASS
+			sh "mysql -h $DB_HOST -u $DB_USER -p $DB_PASS"
 		}
 	}
 }
