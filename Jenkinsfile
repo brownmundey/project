@@ -14,6 +14,7 @@ pipeline {
 				
 				sh "sudo docker system prune -a -f"
 				sh "sudo docker-compose up -d"
+				sh "sudo docker stop weblight-server-2"
 				
 			}
 		}
@@ -32,28 +33,15 @@ pipeline {
 			}	
     }
 	stage ("database") {
-		agent {
-			label {
-				label "database"
-				customWorkspace "/mnt/database"
-			}
-		}
-		steps {
-		    sh "sudo rm -rf *"
-		    sh "sudo git clone https://github.com/brownmundey/my-own.git"
-		  }
-	}
-	stage ("container") {
 	      agent {
 	        label {
 	            label "database"
-	            customWorkspace "/mnt/database/my-own"
+	            customWorkspace "/mnt/database"
 	        }
 	        }
 			steps {
-			 sh "sudo docker-compose down"
-			 sh "sudo docker system prune -a -f"
 			 sh "sudo docker-compose up -d"
+			 sh "sudo docker stop weblight-server-1"
 			}
 	      }
 	      stage ("shutdown") {
