@@ -7,14 +7,27 @@ pipeline {
   }
   environment {
 		work = "/mnt/weblight"
+		database = "/mnt/database"
   }
   stages {
-  stage ("shutdown") {
+  stage ("shutdown-1") {
 	steps {
 		sh "cd ${work} && sudo docker-compose down -v"
 		sh "sudo docker system prune -a -f"
 	}
 	}
+	stage ("shutdown-2") {
+	      agent {
+	        label {
+	            label "database"
+	            customWorkspace "/mnt/database"
+	        }
+	        }
+			steps {
+				sh "cd ${database} && sudo docker-compose down -v"
+		        sh "sudo docker system prune -a -f"
+			}
+			}
 		stage ("tomcat") {
 			steps {
 				
