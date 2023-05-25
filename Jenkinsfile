@@ -26,9 +26,9 @@ pipeline {
 		}
 	    stage ("deploy") {
 			steps {
-				sh "sudo docker cp /mnt/weblight/target/LoginWebApp.war project-server-1:/usr/local/tomcat/webapps"
-			    sh "sudo docker stop project-server-1"
-				sh "sudo docker start project-server-1"
+				sh "sudo docker cp /mnt/weblight/target/LoginWebApp.war weblight-server-1:/usr/local/tomcat/webapps"
+			    sh "sudo docker stop weblight-server-1"
+				sh "sudo docker start weblight-server-1"
 			}	
     }
 	stage ("database") {
