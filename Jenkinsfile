@@ -6,13 +6,12 @@ pipeline {
 	}
   }
   environment {
-		work = "/mnt/weblight/project"
+		work = "/mnt/weblight"
   }
   stages {
-      stage ("clone") {
+      stage ("clean") {
 		  steps {
 		    sh "sudo rm -rf *"
-		    sh "sudo git clone https://github.com/brownmundey/project.git"
 		  }
 		}
 		stage ("tomcat") {
