@@ -4,3 +4,13 @@ services:
     image: tomcat:9
     ports: 
       - 8081:8080
+      
+  database:
+    image: mysql:latest
+    ports: 
+      - 3306:3306
+    environment:
+       - MYSQL_ROOT_PASSWORD=himanshu
+       - MYSQL_DATABASE=test
+       - MYSQL_USER=admin
+       - MYSQL_PASSWORD=himanshu
