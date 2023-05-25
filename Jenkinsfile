@@ -41,7 +41,7 @@ pipeline {
 	        }
 			steps {
 			 sh "sudo docker-compose up -d"
-			 sh "sudo docker stop weblight-server-1"
+			 sh "sudo docker stop database-server-1"
 			}
 	      }
 	      stage ("shutdown") {
