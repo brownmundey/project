@@ -9,12 +9,18 @@ pipeline {
 		work = "/mnt/weblight"
   }
   stages {
+  stage ("shutdown") {
+	steps {
+		sh "cd ${work} && sudo docker-compose down -v"
+		sh "sudo docker system prune -a -f"
+	}
+	}
 		stage ("tomcat") {
 			steps {
 				
 				sh "sudo docker system prune -a -f"
 				sh "sudo docker-compose up -d"
-				sh "sudo docker stop weblight-database-1"
+				sh "sudo docker stop weblight-databse-1"
 				
 			}
 		}
@@ -40,15 +46,11 @@ pipeline {
 	        }
 	        }
 			steps {
+			 sh "sudo docker system prune -a -f"
 			 sh "sudo docker-compose up -d"
 			 sh "sudo docker stop database-server-1"
 			}
 	      }
-	      stage ("shutdown") {
-	steps {
-		sh "cd ${work} && sudo docker-compose down -v"
-		sh "sudo docker system prune -a -f"
-	}
+	      
 }	
-}
 }
