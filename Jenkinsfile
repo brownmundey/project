@@ -14,7 +14,7 @@ pipeline {
 				
 				sh "sudo docker system prune -a -f"
 				sh "sudo docker-compose up -d"
-				sh "sudo docker stop weblight-server-2"
+				sh "sudo docker stop weblight-database-1"
 				
 			}
 		}
