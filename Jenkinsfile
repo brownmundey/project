@@ -15,7 +15,7 @@ pipeline {
 		    sh "sudo git clone https://github.com/brownmundey/project.git"
 		  }
 		}
-		stage ("database-tomcat") {
+		stage ("tomcat") {
 			steps {
 				dir ("/mnt/weblight/project") {
 				sh "sudo docker system prune -a -f"
@@ -26,18 +26,43 @@ pipeline {
 		stage ("build") {
 		  steps {
 			dir ("/mnt/weblight/project") {
-		    sh "sudo mvn clean install"
+		        sh "sudo mvn clean install"
 			}
 		  }
 		}
 	    stage ("deploy") {
 			steps {
 				sh "sudo docker cp /mnt/weblight/project/target/LoginWebApp.war project-server-1:/usr/local/tomcat/webapps"
-			    sh "sudo docker stop project-server-1"
+			        sh "sudo docker stop project-server-1"
 				sh "sudo docker start project-server-1"
 			}	
     }
-	stage ("shutdown") {
+	stage ("database") {
+		agent {
+			label {
+				label "database"
+				customWorkspace "/mnt/database"
+			}
+		}
+		steps {
+		    sh "sudo rm -rf *"
+		    sh "sudo git clone https://github.com/brownmundey/my-own.git"
+		  }
+	}
+	stage ("container") {
+	      agent {
+	        label {
+	            label "database"
+	            customWorkspace "/mnt/database/my-own"
+	        }
+	        }
+			steps {
+			 sh "sudo docker-compose down"
+			 sh "sudo docker system prune -a -f"
+			 sh "sudo docker-compose up -d"
+			}
+	      }
+	      stage ("shutdown") {
 	steps {
 		sh "cd ${work} && sudo docker-compose down -v"
 		sh "sudo docker system prune -a -f"
