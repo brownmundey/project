@@ -1,1 +1,6 @@
-bnn
+version: "3"
+services:
+  server:
+    image: tomcat:9
+    ports: 
+      - 8081:8080
