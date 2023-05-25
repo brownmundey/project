@@ -1,31 +1,47 @@
 pipeline {
-	agent {
-		label {
-			label "built-in"
-			customWorkspace "/root"
-		}
+  agent {
+	label {
+		label "remote"
+		customWorkspace "/mnt/weblight"
 	}
-	stages {
-		stage ("build-project") {
-		steps {
-			sh "mvn clean install"
-			sh "cp -r /root/target/LoginWebApp.war /mnt/server/apache-tomcat-9.0.73/webapps"
-			sh "cd /mnt/server/apache-tomcat-9.0.73/bin | ./shutdown.sh"
-			sh "sleep 5"
-			sh "cd /mnt/server/apache-tomcat-9.0.73/bin | ./startup.sh"
+  }
+  environment {
+		work = "/mnt/weblight/project"
+  }
+  stages {
+      stage ("clone") {
+		  steps {
+		    sh "sudo rm -rf *"
+		    sh "sudo git clone https://github.com/brownmundey/project.git"
+		  }
 		}
+		stage ("database-tomcat") {
+			steps {
+				dir ("/mnt/weblight/project") {
+				sh "sudo docker system prune -a -f"
+				sh "sudo docker-compose up -d"
+				}
+			}
+		}
+		stage ("build") {
+		  steps {
+			dir ("/mnt/weblight/project") {
+		    sh "sudo mvn clean install"
+			}
+		  }
+		}
+	    stage ("deploy") {
+			steps {
+				sh "sudo docker cp /mnt/weblight/project/target/LoginWebApp.war project-server-1:/usr/local/tomcat/webapps"
+			    sh "sudo docker stop project-server-1"
+				sh "sudo docker start project-server-1"
+			}	
+    }
+	stage ("shutdown") {
+	steps {
+		sh "cd ${work} && sudo docker-compose down -v"
+		sh "sudo docker system prune -a -f"
 	}
-	stage ("connect-database") {
-		environment {
-			DB_HOST = 'database-1.cnyclmchztvw.ap-south-1.rds.amazonaws.com'
-			DB_PORT = '3306'
-			DB_USER = 'admin'
-			DB_PASS = 'himanshu'
-		}
-		steps {
-			sh "yum install mysql -y"
-			sh "mysql -h $DB_HOST -u $DB_USER -p $DB_PASS"
-		}
-	}
+}	
 }
 }
