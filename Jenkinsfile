@@ -9,11 +9,6 @@ pipeline {
 		work = "/mnt/weblight"
   }
   stages {
-      stage ("clean") {
-		  steps {
-		    sh "sudo rm -rf *"
-		  }
-		}
 		stage ("tomcat") {
 			steps {
 				
